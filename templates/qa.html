@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question and Answer</title>
+</head>
+<body>
+    <h1>Question and Answer</h1>
+    <div id="chat-box"></div>
+    <input type="text" id="question" placeholder="Ask a question" />
+    <button onclick="sendQuestion()">Send</button>
+
+    <script>
+        const sessionId = "{{ session_id }}";
+        const ws = new WebSocket(`ws://localhost:8000/ws/${sessionId}`);
+        
+        ws.onmessage = function(event) {
+            const chatBox = document.getElementById("chat-box");
+            const message = document.createElement("p");
+            message.textContent = event.data;
+            chatBox.appendChild(message);
+        };
+
+        function sendQuestion() {
+            const questionInput = document.getElementById("question");
+            ws.send(questionInput.value);
+            questionInput.value = '';
+        }
+    </script>
+</body>
+</html>
